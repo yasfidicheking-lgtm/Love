@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>سحر الحب ✨</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial;
+  text-align:center;
+  background: radial-gradient(circle, #1a001f, #000);
+  color:white;
+  overflow:hidden;
+}
+
+.container{
+  padding:40px;
+}
+
+input{
+  padding:12px;
+  font-size:18px;
+  border-radius:20px;
+  border:none;
+  text-align:center;
+}
+
+button{
+  padding:12px 25px;
+  font-size:18px;
+  margin-top:15px;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  background:#ff0080;
+  color:white;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.1);
+}
+
+#magicName{
+  font-size:40px;
+  margin-top:30px;
+  text-shadow:0 0 10px #ff4da6, 0 0 20px #ff1a75;
+}
+
+.hidden{
+  display:none;
+}
+
+.heart{
+  position:fixed;
+  top:-10px;
+  color:#ff4da6;
+  animation: fall linear forwards;
+}
+
+@keyframes fall{
+  to{
+    transform: translateY(100vh);
+    opacity:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="step1">
+  <h2>هذا الموقع ما يخدمش إلا باسم واحد ✨</h2>
+  <input type="text" id="nameInput" placeholder="moad>
+  <br>
+  <button onclick="startMagic()">افتح السحر 💖</button>
+</div>
+
+<div class="container hidden" id="step2">
+  <h1 id="magicName"></h1>
+  <p id="message" style="font-size:22px;margin-top:20px;"></p>
+  <button onclick="finalQuestion()">واش نكمل؟ 💫</button>
+</div>
+
+<div class="container hidden" id="step3">
+  <h1 id="finalText"></h1>
+  <br>
+  <button onclick="yesLove()">نعم 💖</button>
+  <button onclick="yesLove()">أكيد نعم 😏</button>
+</div>
+
+<script>
+
+function startMagic(){
+  const name = document.getElementById("nameInput").value.trim();
+  if(name === "") return;
+
+  document.getElementById("step1").classList.add("hidden");
+  document.getElementById("step2").classList.remove("hidden");
+
+  document.getElementById("magicName").innerText = "✨ " + name + " ✨";
+  document.getElementById("message").innerText =
+  "يا " + name + "...\nمن نهار عرفتك وحياتي تبدلات 💖\nوجودك عطاني معنى جديد للحب ❤️";
+
+  document.getElementById("bgMusic").play();
+  startHearts();
+}
+
+function finalQuestion(){
+  const name = document.getElementById("nameInput").value.trim();
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
+
+  document.getElementById("finalText").innerText =
+  name + " 💍\nواش تقبلي تكوني حبيبتي ونكتبوا قصة حب ديالنا مع بعض؟ 💖";
+}
+
+function yesLove(){
+  alert("من اليوم بدأنا أجمل قصة حب ❤️✨");
+}
+
+function startHearts(){
+  setInterval(()=>{
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerText="💖";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.fontSize=(15+Math.random()*25)+"px";
+    heart.style.animationDuration=(3+Math.random()*5)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),8000);
+  },300);
+}
+
+</script>
+
+</body>
+</html>
