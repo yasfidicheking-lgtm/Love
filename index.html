@@ -2,141 +2,180 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>سحر الحب ✨</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Capsule PRO 💘</title>
 
 <style>
 body{
   margin:0;
-  font-family: Arial;
-  text-align:center;
-  background: radial-gradient(circle, #1a001f, #000);
-  color:white;
+  font-family:Arial, sans-serif;
+  background: linear-gradient(135deg,#ff4e8a,#ff9ecf);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
   overflow:hidden;
+  color:white;
+  text-align:center;
 }
 
 .container{
-  padding:40px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  padding:30px;
+  border-radius:20px;
+  width:90%;
+  max-width:450px;
+  box-shadow:0 0 40px rgba(0,0,0,0.3);
+  z-index:2;
 }
 
-input{
-  padding:12px;
-  font-size:18px;
-  border-radius:20px;
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
   border:none;
-  text-align:center;
+  border-radius:10px;
+  outline:none;
 }
 
 button{
-  padding:12px 25px;
-  font-size:18px;
-  margin-top:15px;
+  padding:10px 20px;
   border:none;
-  border-radius:30px;
+  border-radius:20px;
+  background:white;
+  color:#ff4e8a;
+  font-weight:bold;
   cursor:pointer;
-  background:#ff0080;
-  color:white;
   transition:0.3s;
 }
 
 button:hover{
-  transform:scale(1.1);
+  background:#ff4e8a;
+  color:white;
 }
 
-#magicName{
-  font-size:40px;
-  margin-top:30px;
-  text-shadow:0 0 10px #ff4da6, 0 0 20px #ff1a75;
-}
-
-.hidden{
-  display:none;
-}
+.hidden{ display:none; }
 
 .heart{
-  position:fixed;
-  top:-10px;
-  color:#ff4da6;
-  animation: fall linear forwards;
+  position:absolute;
+  color:white;
+  animation: float 6s linear infinite;
+  font-size:20px;
 }
 
-@keyframes fall{
-  to{
-    transform: translateY(100vh);
-    opacity:0;
-  }
+@keyframes float{
+  0%{ transform: translateY(100vh) scale(1); opacity:1;}
+  100%{ transform: translateY(-10vh) scale(1.5); opacity:0;}
 }
 </style>
 </head>
-
 <body>
 
-<audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
-
-<div class="container" id="step1">
-  <h2>هذا الموقع ما يخدمش إلا باسم واحد ✨</h2>
-  <input type="text" id="nameInput" placeholder="moad>
-  <br>
-  <button onclick="startMagic()">افتح السحر 💖</button>
+<div class="container" id="formBox">
+  <h2>💘 صايب رسالة سرّية</h2>
+  <input type="text" id="sender" placeholder="سميتك">
+  <input type="text" id="receiver" placeholder="سمية الحبيب/ة">
+  <textarea id="message" placeholder="كتب رسالة حب 💌"></textarea>
+  <input type="datetime-local" id="unlockTime">
+  <button onclick="generateLink()">توليد لينك سري</button>
+  <p id="linkOutput"></p>
 </div>
 
-<div class="container hidden" id="step2">
-  <h1 id="magicName"></h1>
-  <p id="message" style="font-size:22px;margin-top:20px;"></p>
-  <button onclick="finalQuestion()">واش نكمل؟ 💫</button>
+<div class="container hidden" id="countdownBox">
+  <h2>⏳ المفاجأة غادي تتحل بعد...</h2>
+  <div id="countdown"></div>
 </div>
 
-<div class="container hidden" id="step3">
-  <h1 id="finalText"></h1>
-  <br>
-  <button onclick="yesLove()">نعم 💖</button>
-  <button onclick="yesLove()">أكيد نعم 😏</button>
+<div class="container hidden" id="messageBox">
+  <h2 id="finalTitle"></h2>
+  <p id="finalMessage"></p>
 </div>
 
 <script>
+function generateLink(){
+  const sender = document.getElementById("sender").value;
+  const receiver = document.getElementById("receiver").value;
+  const message = document.getElementById("message").value;
+  const time = document.getElementById("unlockTime").value;
 
-function startMagic(){
-  const name = document.getElementById("nameInput").value.trim();
-  if(name === "") return;
+  if(!sender || !receiver || !message || !time){
+    alert("عمر جميع المعلومات ❤️");
+    return;
+  }
 
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
+  const data = {
+    s: sender,
+    r: receiver,
+    m: message,
+    t: time
+  };
 
-  document.getElementById("magicName").innerText = "✨ " + name + " ✨";
-  document.getElementById("message").innerText =
-  "يا " + name + "...\nمن نهار عرفتك وحياتي تبدلات 💖\nوجودك عطاني معنى جديد للحب ❤️";
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  const link = window.location.origin + window.location.pathname + "#" + encoded;
 
-  document.getElementById("bgMusic").play();
+  document.getElementById("linkOutput").innerHTML =
+    "🔐 اللينك السري:<br><a href='"+link+"' style='color:white'>"+link+"</a>";
+}
+
+function loadFromHash(){
+  if(window.location.hash){
+    const decoded = JSON.parse(decodeURIComponent(escape(atob(window.location.hash.substring(1)))));
+    startCountdown(decoded);
+  }
+}
+
+function startCountdown(data){
+  document.getElementById("formBox").classList.add("hidden");
+  document.getElementById("countdownBox").classList.remove("hidden");
+
+  const unlockDate = new Date(data.t).getTime();
+
+  const interval = setInterval(()=>{
+    const now = new Date().getTime();
+    const distance = unlockDate - now;
+
+    if(distance <= 0){
+      clearInterval(interval);
+      showMessage(data);
+      return;
+    }
+
+    const days = Math.floor(distance/(1000*60*60*24));
+    const hours = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+    const minutes = Math.floor((distance%(1000*60*60))/(1000*60));
+    const seconds = Math.floor((distance%(1000*60))/1000);
+
+    document.getElementById("countdown").innerHTML =
+      days+" يوم "+hours+" ساعة "+minutes+" دقيقة "+seconds+" ثانية ❤️";
+  },1000);
+}
+
+function showMessage(data){
+  document.getElementById("countdownBox").classList.add("hidden");
+  document.getElementById("messageBox").classList.remove("hidden");
+
+  document.getElementById("finalTitle").innerHTML =
+    "💖 من "+data.s+" إلى "+data.r;
+  document.getElementById("finalMessage").innerHTML = data.m;
+
   startHearts();
-}
-
-function finalQuestion(){
-  const name = document.getElementById("nameInput").value.trim();
-  document.getElementById("step2").classList.add("hidden");
-  document.getElementById("step3").classList.remove("hidden");
-
-  document.getElementById("finalText").innerText =
-  name + " 💍\nواش تقبلي تكوني حبيبتي ونكتبوا قصة حب ديالنا مع بعض؟ 💖";
-}
-
-function yesLove(){
-  alert("من اليوم بدأنا أجمل قصة حب ❤️✨");
 }
 
 function startHearts(){
   setInterval(()=>{
     const heart = document.createElement("div");
     heart.classList.add("heart");
-    heart.innerText="💖";
-    heart.style.left=Math.random()*100+"vw";
-    heart.style.fontSize=(15+Math.random()*25)+"px";
-    heart.style.animationDuration=(3+Math.random()*5)+"s";
+    heart.innerHTML="❤️";
+    heart.style.left = Math.random()*100+"vw";
+    heart.style.fontSize = (15+Math.random()*30)+"px";
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),8000);
+
+    setTimeout(()=>{heart.remove();},6000);
   },300);
 }
 
+loadFromHash();
 </script>
 
 </body>
